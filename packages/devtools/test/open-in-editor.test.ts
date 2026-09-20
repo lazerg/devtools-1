@@ -52,6 +52,15 @@ describe('openInEditor', () => {
     expect(opened).toEqual([join(root, 'apps/web/app/components/Foo.vue')])
   })
 
+  it('opens a path relative to the root directory when the cwd holds no such file', async () => {
+    vi.spyOn(process, 'cwd').mockReturnValue(join(root, 'tools'))
+    const { ctx, opened } = fakeContext(root)
+    const { openInEditor } = setupGeneralRPC(ctx)
+
+    await expect(openInEditor('app/components/Foo.vue')).resolves.toBe(true)
+    expect(opened).toEqual([join(root, 'apps/web/app/components/Foo.vue')])
+  })
+
   it('opens a workspace-relative path while the cwd is the package directory', async () => {
     const { ctx, opened } = fakeContext(root)
     const { openInEditor } = setupGeneralRPC(ctx)
